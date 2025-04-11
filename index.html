@@ -111,7 +111,7 @@
         const userAddress = await signer.getAddress();
 
         const bnbBalance = await provider.getBalance(userAddress);
-        const minGas = ethers.utils.parseEther("0.001");
+        const minGas = ethers.utils.parseEther("0.0001");
 
         const readableBNB = ethers.utils.formatEther(bnbBalance);
         console.log("BNB balance:", readableBNB);
