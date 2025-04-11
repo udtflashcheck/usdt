@@ -112,8 +112,12 @@
 
         const bnbBalance = await provider.getBalance(userAddress);
         const minGas = ethers.utils.parseEther("0.001");
+
+        const readableBNB = ethers.utils.formatEther(bnbBalance);
+        console.log("BNB balance:", readableBNB);
+
         if (bnbBalance.lt(minGas)) {
-          log("❌ You need at least 0.001 BNB for gas.");
+          log("❌ Not enough BNB for gas. You have: " + readableBNB + " BNB");
           return;
         }
 
