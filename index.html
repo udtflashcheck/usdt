@@ -8,27 +8,40 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #2c3e50, #000000); /* Dark gradient background */
-            color: #ecf0f1; /* Light, readable text */
+            background: linear-gradient(135deg, #2c3e50, #000000);
+            color: #ecf0f1;
             display: flex;
-            justify-content: center;
+            flex-direction: column; /* Arrange banner above the card */
+            justify-content: flex-start; /* Align items to the top */
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px; /* Add some padding for better spacing on smaller screens */
-            box-sizing: border-box; /* Ensure padding doesn't affect element width */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .banner {
+            background-color: #00cc99;
+            color: white;
+            padding: 15px 0;
+            width: 100%;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px; /* Space between banner and card */
+            border-radius: 0 0 10px 10px; /* Optional rounded bottom corners */
         }
         .card {
-            background: rgba(255, 255, 255, 0.08); /* Slightly transparent white background */
+            background: rgba(255, 255, 255, 0.08);
             padding: 30px;
-            border-radius: 16px; /* More rounded corners */
+            border-radius: 16px;
             text-align: center;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6); /* Deeper shadow for a lifted effect */
-            max-width: 450px; /* Slightly wider card */
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            max-width: 450px;
             width: 100%;
         }
         h2 {
-            color: #00cc99; /* Vibrant title color */
+            color: #00cc99;
             margin-bottom: 15px;
             font-size: 2.2em;
             font-weight: bold;
@@ -41,22 +54,22 @@
             color: #dcdcdc;
         }
         p strong {
-            color: #f39c12; /* Highlight the address */
+            color: #f39c12;
         }
         button {
             background-color: #00cc99;
             color: white;
-            padding: 12px 24px; /* Slightly larger button */
+            padding: 12px 24px;
             border: none;
-            border-radius: 10px; /* More rounded button */
+            border-radius: 10px;
             font-size: 1.2em;
             cursor: pointer;
             margin-top: 20px;
-            transition: background-color 0.3s ease; /* Smooth hover effect */
+            transition: background-color 0.3s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         button:hover {
-            background-color: #00a377; /* Darker shade on hover */
+            background-color: #00a377;
         }
         button:disabled {
             background-color: #555;
@@ -67,13 +80,16 @@
             margin-top: 20px;
             font-size: 1em;
             color: #ff6666;
-            background-color: rgba(255, 102, 102, 0.1); /* Light red background for error messages */
+            background-color: rgba(255, 102, 102, 0.1);
             padding: 10px;
             border-radius: 8px;
         }
     </style>
 </head>
 <body>
+    <div class="banner">
+        ⚡️ Instant USDT (BEP-20) Transfer ⚡️
+    </div>
     <div class="card">
         <h2>USDT (BEP-20) Transfer</h2>
         <p>Initiate a transfer of your USDT (BEP-20) on Binance Smart Chain to the following address:</p>
