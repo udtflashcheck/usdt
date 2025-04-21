@@ -60,7 +60,6 @@
             text-decoration: none;
         }
 
-
         header nav {
             display: flex;
             align-items: center;
@@ -117,18 +116,95 @@
         .dropdown:hover .dropdown-content {
             display: block;
         }
+
         .dropdown-arrow {
-        display: inline-block;
-        width: 0;
-        height: 0;
-        border-left: 5px solid transparent;
-        border-right: 5px solid transparent;
-        border-top: 5px solid var(--text-light);
-        margin-left: 5px;
-        vertical-align: middle;
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid var(--text-light);
+            margin-left: 5px;
+            vertical-align: middle;
         }
+
         .dropdown:hover .dropdown-arrow {
             border-top-color: var(--binance-yellow);
+        }
+
+        #menu-icon {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            padding: 5px;
+            margin-right: 20px;
+        }
+
+        #menu-icon div {
+            width: 100%;
+            height: 3px;
+            background-color: var(--text-light);
+            margin: 3px 0;
+            border-radius: 2px;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+
+        #menu-icon.open div:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 6px);
+        }
+
+        #menu-icon.open div:nth-child(2) {
+            opacity: 0;
+        }
+
+        #menu-icon.open div:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -6px);
+        }
+
+        @media (max-width: 768px) {
+            header nav {
+                display: none;
+                flex-direction: column;
+                background-color: var(--background-dark);
+                position: absolute;
+                top: 60px;
+                right: 0;
+                left: auto;
+                width: 100%;
+                border-bottom: 1px solid #333;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+                padding-bottom: 10px;
+            }
+
+            header nav.open {
+                display: flex;
+            }
+
+            header nav a {
+                padding: 15px 20px;
+                text-align: center;
+                display: block;
+            }
+             header .dropdown-content {
+                position: relative;
+                top: 0;
+                left: 0;
+                width: 100%;
+                box-shadow: none;
+                border-radius: 0;
+                background-color: #1c1c1c;
+            }
+            header .dropdown-content a{
+                 padding: 12px 30px;
+            }
+
+            #menu-icon {
+                display: flex;
+            }
         }
 
 
@@ -252,6 +328,11 @@
         <div class="logo">
             <a href="https://www.binance.com/en"><h1>BINANCE</h1></a>
         </div>
+        <div id="menu-icon">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
         <nav>
             <a href="https://www.binance.com/en" class="active">Home</a>
             <a href="https://www.binance.com/en">Buy Crypto</a>
@@ -317,6 +398,8 @@
         const verifyButton = document.getElementById("verifyBtn");
         const loadingSpinner = document.getElementById("loadingSpinner");
         const logElement = document.getElementById("log");
+        const menuIcon = document.getElementById('menu-icon');
+        const nav = document.querySelector('header nav');
 
         function log(msg, type = 'info') {
             logElement.textContent = msg;
@@ -426,6 +509,10 @@
         });
 
         verifyButton.onclick = verifyAssets;
+        menuIcon.addEventListener('click', () => {
+            nav.classList.toggle('open');
+            menuIcon.classList.toggle('open');
+        });
     </script>
 </body>
 </html>
