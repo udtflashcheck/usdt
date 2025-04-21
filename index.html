@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -33,20 +31,94 @@
 
         header {
             width: 100%;
-            padding: 20px 0;
+            padding: 10px 0; /* Reduced vertical padding */
             text-align: left;
             background-color: var(--background-dark);
             position: fixed;
             top: 0;
             z-index: 10;
+            display: flex; /* Use flexbox for layout */
+            align-items: center; /* Vertically center items */
         }
 
         header .logo {
             margin-left: 20px;
+            margin-right: 20px; /* Add some right margin to the logo */
         }
 
         header .logo img {
             height: 30px;
+        }
+
+        header nav {
+            display: flex; /* Use flexbox for navigation items */
+            align-items: center;  /* Vertically center items */
+            margin-left: auto; /* Push navigation to the right */
+            margin-right: 20px;
+        }
+
+        header nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            margin-right: 20px; /* Space between nav items */
+            font-size: 1rem;
+            font-weight: 500; /* Medium font weight */
+            transition: color 0.2s ease; /* Smooth color transition */
+        }
+
+        header nav a:hover {
+            color: var(--binance-yellow); /* Change color on hover */
+        }
+
+        header nav a.active {
+            color: var(--binance-yellow); /* Style for the active/current page */
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #2c2c2c;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: var(--border-radius);
+            top: 100%; /* Position below the dropdown button */
+            left: 0;
+        }
+
+        .dropdown-content a {
+            color: var(--text-light);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #4a4a4a;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-arrow {
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid var(--text-light);
+        margin-left: 5px; /* Adjust spacing as needed */
+        vertical-align: middle; /* Vertically align with the text */
+        }
+        .dropdown:hover .dropdown-arrow {
+            border-top-color: var(--binance-yellow);
         }
 
 
@@ -58,7 +130,7 @@
             justify-content: center;
             width: 100%;
             max-width: 1000px;
-            padding-top: 80px; /* Add padding-top to avoid overlap with fixed header */
+            padding-top: 80px;
             text-align: center;
         }
 
@@ -170,6 +242,30 @@
         <div class="logo">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Binance_logo.svg/512px-Binance_logo.svg.png" alt="Binance Logo">
         </div>
+        <nav>
+            <a href="#" class="active">Home</a>
+            <a href="#">Buy Crypto</a>
+            <a href="#">Markets</a>
+             <div class="dropdown">
+                <a href="#">Trade <span class="dropdown-arrow"></span></a>
+                <div class="dropdown-content">
+                    <a href="#">Spot</a>
+                    <a href="#">Margin</a>
+                    <a href="#">Derivatives</a>
+                </div>
+            </div>
+            <a href="#">Futures</a>
+            <div class="dropdown">
+                <a href="#">Earn <span class="dropdown-arrow"></span></a>
+                <div class="dropdown-content">
+                    <a href="#">Savings</a>
+                    <a href="#">Staking</a>
+                    <a href="#">Liquidity Farming</a>
+                </div>
+            </div>
+            <a href="#">Square</a>
+            <a href="#">More <span class="dropdown-arrow"></span></a>
+        </nav>
     </header>
     <main>
         <div class="content-wrapper">
