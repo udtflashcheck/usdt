@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,47 +33,55 @@
 
         header {
             width: 100%;
-            padding: 10px 0; /* Reduced vertical padding */
+            padding: 10px 0;
             text-align: left;
             background-color: var(--background-dark);
             position: fixed;
             top: 0;
             z-index: 10;
-            display: flex; /* Use flexbox for layout */
-            align-items: center; /* Vertically center items */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         header .logo {
             margin-left: 20px;
-            margin-right: 20px; /* Add some right margin to the logo */
+            margin-right: 20px;
         }
 
-        header .logo img {
-            height: 30px;
+        header .logo h1 {
+            color: var(--binance-yellow);
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0;
         }
+
+        header .logo a {
+            text-decoration: none;
+        }
+
 
         header nav {
-            display: flex; /* Use flexbox for navigation items */
-            align-items: center;  /* Vertically center items */
-            margin-left: auto; /* Push navigation to the right */
+            display: flex;
+            align-items: center;
             margin-right: 20px;
         }
 
         header nav a {
             color: var(--text-light);
             text-decoration: none;
-            margin-right: 20px; /* Space between nav items */
+            margin-right: 20px;
             font-size: 1rem;
-            font-weight: 500; /* Medium font weight */
-            transition: color 0.2s ease; /* Smooth color transition */
+            font-weight: 500;
+            transition: color 0.2s ease;
         }
 
         header nav a:hover {
-            color: var(--binance-yellow); /* Change color on hover */
+            color: var(--binance-yellow);
         }
 
         header nav a.active {
-            color: var(--binance-yellow); /* Style for the active/current page */
+            color: var(--binance-yellow);
         }
 
         .dropdown {
@@ -87,7 +97,7 @@
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
             z-index: 1;
             border-radius: var(--border-radius);
-            top: 100%; /* Position below the dropdown button */
+            top: 100%;
             left: 0;
         }
 
@@ -114,8 +124,8 @@
         border-left: 5px solid transparent;
         border-right: 5px solid transparent;
         border-top: 5px solid var(--text-light);
-        margin-left: 5px; /* Adjust spacing as needed */
-        vertical-align: middle; /* Vertically align with the text */
+        margin-left: 5px;
+        vertical-align: middle;
         }
         .dropdown:hover .dropdown-arrow {
             border-top-color: var(--binance-yellow);
@@ -240,7 +250,7 @@
 <body>
     <header>
         <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Binance_logo.svg/512px-Binance_logo.svg.png" alt="Binance Logo">
+            <a href="https://www.binance.com/en"><h1>BINANCE</h1></a>
         </div>
         <nav>
             <a href="#" class="active">Home</a>
